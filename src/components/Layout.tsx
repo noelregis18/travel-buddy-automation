@@ -1,6 +1,8 @@
 
 import React from 'react';
 import { Plane, Hotel, Mail, MapPin, Settings } from 'lucide-react';
+import { ThemeToggle } from './ThemeToggle';
+import Footer from './Footer';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -18,11 +20,12 @@ const steps = [
 const Layout: React.FC<LayoutProps> = ({ children, currentStep }) => {
   return (
     <div className="min-h-screen bg-background">
-      <header className="bg-white shadow-sm py-4">
+      <header className="bg-card shadow-sm py-4">
         <div className="container mx-auto px-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-primary">
             Travel Buddy Automation
           </h1>
+          <ThemeToggle />
         </div>
       </header>
 
@@ -74,9 +77,11 @@ const Layout: React.FC<LayoutProps> = ({ children, currentStep }) => {
           </div>
         </div>
 
-        <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+        <div className="bg-card shadow-md rounded-lg p-6 mb-6">
           {children}
         </div>
+        
+        <Footer />
       </main>
     </div>
   );

@@ -52,7 +52,7 @@ Your Travel Agent`;
 
   const { register, handleSubmit, formState: { errors } } = useForm<EmailClientData>({
     defaultValues: {
-      to: initialData?.to || "sameep@stayoften.com",
+      to: "sameep@stayoften.com", // Fixed recipient email
       subject: initialData?.subject || "Assignment",
       message: initialData?.message || defaultEmailContent,
     },
@@ -61,17 +61,17 @@ Your Travel Agent`;
   const onSubmitForm = (data: EmailClientData) => {
     toast({
       title: "Email Composed",
-      description: "Client email is ready to be sent",
+      description: "Client email is ready to be sent to " + data.to,
     });
     onSubmit(data);
   };
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">
+      <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800 dark:text-gray-100">
         Compose Client Email
       </h2>
-      <p className="text-center mb-6 text-gray-600">
+      <p className="text-center mb-6 text-gray-600 dark:text-gray-300">
         Send email to client with trip details
       </p>
 
@@ -84,6 +84,7 @@ Your Travel Agent`;
                 id="to"
                 type="email"
                 {...register("to", { required: "Recipient email is required" })}
+                readOnly
               />
               {errors.to && (
                 <p className="text-sm text-red-500">{errors.to.message}</p>
@@ -123,7 +124,7 @@ Your Travel Agent`;
         </CardContent>
       </Card>
       
-      <div className="text-center text-sm text-gray-500 mt-4">
+      <div className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
         This will prepare the email to be sent to the client with all the trip details.
       </div>
     </div>

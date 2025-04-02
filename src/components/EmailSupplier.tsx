@@ -44,7 +44,7 @@ Travel Agent`;
 
   const { register, handleSubmit, formState: { errors } } = useForm<EmailSupplierData>({
     defaultValues: {
-      to: initialData?.to || "info@stayoften.com",
+      to: "info@stayoften.com", // Fixed recipient email
       subject: initialData?.subject || "Assignment",
       message: initialData?.message || defaultEmailContent,
     },
@@ -53,17 +53,17 @@ Travel Agent`;
   const onSubmitForm = (data: EmailSupplierData) => {
     toast({
       title: "Supplier Email Prepared",
-      description: "Email to activity supplier is ready to be sent",
+      description: "Email to activity supplier is ready to be sent to " + data.to,
     });
     onSubmit(data);
   };
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">
+      <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800 dark:text-gray-100">
         Email Activity Supplier
       </h2>
-      <p className="text-center mb-6 text-gray-600">
+      <p className="text-center mb-6 text-gray-600 dark:text-gray-300">
         Request go-karting activity pricing from supplier
       </p>
 
@@ -76,6 +76,7 @@ Travel Agent`;
                 id="to"
                 type="email"
                 {...register("to", { required: "Recipient email is required" })}
+                readOnly
               />
               {errors.to && (
                 <p className="text-sm text-red-500">{errors.to.message}</p>
@@ -115,7 +116,7 @@ Travel Agent`;
         </CardContent>
       </Card>
       
-      <div className="text-center text-sm text-gray-500 mt-4">
+      <div className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
         This email will request pricing for the go-karting activity from the supplier.
       </div>
     </div>
