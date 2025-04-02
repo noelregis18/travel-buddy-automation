@@ -5,7 +5,6 @@ import { CheckCircle, Mail, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { flightOptions, hotelData } from "@/data/travelData";
 import { toast } from "@/components/ui/use-toast";
-
 interface CompletionStepProps {
   onReset: () => void;
   processData: {
@@ -25,7 +24,6 @@ interface CompletionStepProps {
     };
   };
 }
-
 const CompletionStep: React.FC<CompletionStepProps> = ({
   onReset,
   processData
@@ -56,13 +54,11 @@ const CompletionStep: React.FC<CompletionStepProps> = ({
       total: hotel.totalFor3Nights
     };
   };
-
   const flightDetails = getFlightDetails(processData.flight.flightOption);
   const hotelDetails = getHotelDetails(processData.hotel.hotelOption);
-
   const sendEmails = async () => {
     setIsSending(true);
-    
+
     // Build email content
     const clientEmailContent = `
 Dear ${processData.lead.name},
@@ -82,7 +78,6 @@ The hotel is conveniently located near Dubai Marina as requested. I will confirm
 Best regards,
 Your Travel Agent
     `;
-
     const supplierEmailContent = `
 Hello,
 
@@ -98,25 +93,21 @@ Thank you for your assistance.
 Best regards,
 Travel Agent
     `;
-
     try {
       // Try to send emails using fetch to simulate sending emails
       // In a real app, this would connect to a backend service
-      
+
       console.log("Sending client email to: sameep@stayoften.com");
       console.log("Client email content:", clientEmailContent);
-      
       console.log("Sending supplier email to: info@stayoften.com");
       console.log("Supplier email content:", supplierEmailContent);
-      
+
       // Simulate network call delay
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
       toast({
         title: "Emails Sent Successfully",
-        description: "Trip details sent to sameep@stayoften.com and info@stayoften.com",
+        description: "Trip details sent to sameep@stayoften.com and info@stayoften.com"
       });
-      
       setEmailsSent(true);
     } catch (error) {
       console.error("Error sending emails:", error);
@@ -129,7 +120,6 @@ Travel Agent
       setIsSending(false);
     }
   };
-
   return <div>
       <div className="flex flex-col items-center justify-center mb-8">
         <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mb-4">
@@ -201,8 +191,8 @@ Travel Agent
                   <p className="font-medium">{hotelDetails.name}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Location</p>
-                  <p className="font-medium">Dubai Marina</p>
+                  
+                  
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-500">Package</p>
@@ -220,55 +210,33 @@ Travel Agent
               
               <div className="space-y-4">
                 <div className="flex items-center">
-                  {emailsSent ? (
-                    <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mr-2">
+                  {emailsSent ? <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mr-2">
                       <CheckCircle className="h-4 w-4 text-green-600" />
-                    </div>
-                  ) : (
-                    <div className="w-6 h-6 rounded-full bg-yellow-100 flex items-center justify-center mr-2">
+                    </div> : <div className="w-6 h-6 rounded-full bg-yellow-100 flex items-center justify-center mr-2">
                       <Mail className="h-4 w-4 text-yellow-600" />
-                    </div>
-                  )}
+                    </div>}
                   <p>Client email {emailsSent ? "sent" : "prepared"} to sameep@stayoften.com</p>
                 </div>
                 <div className="flex items-center">
-                  {emailsSent ? (
-                    <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mr-2">
+                  {emailsSent ? <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mr-2">
                       <CheckCircle className="h-4 w-4 text-green-600" />
-                    </div>
-                  ) : (
-                    <div className="w-6 h-6 rounded-full bg-yellow-100 flex items-center justify-center mr-2">
+                    </div> : <div className="w-6 h-6 rounded-full bg-yellow-100 flex items-center justify-center mr-2">
                       <Mail className="h-4 w-4 text-yellow-600" />
-                    </div>
-                  )}
+                    </div>}
                   <p>Supplier email {emailsSent ? "sent" : "prepared"} to info@stayoften.com</p>
                 </div>
               </div>
             </div>
 
             <div className="flex justify-center mt-6 gap-4 flex-wrap">
-              {!emailsSent && (
-                <Button 
-                  onClick={sendEmails} 
-                  className="px-6 bg-blue-600 hover:bg-blue-700"
-                  disabled={isSending}
-                >
-                  {isSending ? (
-                    <>
+              {!emailsSent && <Button onClick={sendEmails} className="px-6 bg-blue-600 hover:bg-blue-700" disabled={isSending}>
+                  {isSending ? <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Sending Emails...
-                    </>
-                  ) : (
-                    <>Send Emails</>
-                  )}
-                </Button>
-              )}
+                    </> : <>Send Emails</>}
+                </Button>}
               
-              <Button 
-                onClick={onReset} 
-                className="px-6"
-                disabled={isSending || !emailsSent}
-              >
+              <Button onClick={onReset} className="px-6" disabled={isSending || !emailsSent}>
                 Process New Trip Request
               </Button>
             </div>
@@ -277,12 +245,8 @@ Travel Agent
       </Card>
       
       <div className="text-center text-sm text-gray-500 mt-4">
-        {emailsSent 
-          ? "Emails have been sent to both client and supplier. You can now process a new trip request."
-          : "Please send the emails to complete the process before starting a new trip request."
-        }
+        {emailsSent ? "Emails have been sent to both client and supplier. You can now process a new trip request." : "Please send the emails to complete the process before starting a new trip request."}
       </div>
     </div>;
 };
-
 export default CompletionStep;
