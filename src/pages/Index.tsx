@@ -8,7 +8,7 @@ import EmailClient, { EmailClientData } from "@/components/EmailClient";
 import EmailSupplier, { EmailSupplierData } from "@/components/EmailSupplier";
 import CompletionStep from "@/components/CompletionStep";
 import { format } from "date-fns";
-import { hotelData, leadData } from "@/data/travelData";
+import { hotelData as hotelDataset, leadData } from "@/data/travelData";
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -59,7 +59,7 @@ const Index = () => {
   const getHotelDetails = (hotelId: string | undefined) => {
     if (!hotelId) return { name: "", price: "" };
     
-    const hotel = hotelData.find(h => h.id === hotelId);
+    const hotel = hotelDataset.find(h => h.id === hotelId);
     
     if (!hotel) return { name: "", price: "" };
     return { 
