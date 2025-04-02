@@ -1,11 +1,9 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle } from "lucide-react";
 import { format } from "date-fns";
 import { flightOptions, hotelData } from "@/data/travelData";
-
 interface CompletionStepProps {
   onReset: () => void;
   processData: {
@@ -25,35 +23,36 @@ interface CompletionStepProps {
     };
   };
 }
-
-const CompletionStep: React.FC<CompletionStepProps> = ({ 
+const CompletionStep: React.FC<CompletionStepProps> = ({
   onReset,
   processData
 }) => {
   // Get flight details from our dataset
   const getFlightDetails = (flightCode: string) => {
     const flight = flightOptions.find(f => f.id === flightCode);
-    return flight || { airline: "Unknown", price: "Unknown" };
+    return flight || {
+      airline: "Unknown",
+      price: "Unknown"
+    };
   };
-  
+
   // Get hotel details from our dataset
   const getHotelDetails = (hotelCode: string) => {
     const hotel = hotelData.find(h => h.id === hotelCode);
-    
-    if (!hotel) return { name: "Unknown", price: "Unknown", total: "Unknown" };
-    
-    return { 
-      name: hotel.name, 
-      price: hotel.board === "Breakfast" ? hotel.costPerPersonLargeGroup : hotel.costPerPersonLargeGroup, 
-      total: hotel.totalFor3Nights 
+    if (!hotel) return {
+      name: "Unknown",
+      price: "Unknown",
+      total: "Unknown"
+    };
+    return {
+      name: hotel.name,
+      price: hotel.board === "Breakfast" ? hotel.costPerPersonLargeGroup : hotel.costPerPersonLargeGroup,
+      total: hotel.totalFor3Nights
     };
   };
-  
   const flightDetails = getFlightDetails(processData.flight.flightOption);
   const hotelDetails = getHotelDetails(processData.hotel.hotelOption);
-
-  return (
-    <div>
+  return <div>
       <div className="flex flex-col items-center justify-center mb-8">
         <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mb-4">
           <CheckCircle className="h-10 w-10 text-green-600" />
@@ -132,8 +131,8 @@ const CompletionStep: React.FC<CompletionStepProps> = ({
                   <p className="font-medium">Bed & Breakfast</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Total Price (3 Nights)</p>
-                  <p className="font-medium">{hotelDetails.total}</p>
+                  
+                  
                 </div>
               </div>
             </div>
@@ -170,8 +169,6 @@ const CompletionStep: React.FC<CompletionStepProps> = ({
         All steps have been completed successfully. The lead has been added to the pipeline,
         flight and hotel have been selected, and emails have been prepared for both client and supplier.
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default CompletionStep;
