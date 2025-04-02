@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -9,39 +8,40 @@ import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { hotelData } from "@/data/travelData";
-
 export interface HotelData {
   hotelOption: string;
 }
-
 interface HotelSelectionProps {
   onSubmit: (data: HotelData) => void;
   initialData?: Partial<HotelData>;
 }
 
 // Filter hotels that are in Marina and have breakfast option
-const filteredHotels = hotelData.filter(hotel => 
-  hotel.area === "Marina" || (hotel.area === "Oud Metha" && hotel.board === "Breakfast")
-);
-
-const HotelSelection: React.FC<HotelSelectionProps> = ({ onSubmit, initialData }) => {
-  const { control, handleSubmit, formState: { errors } } = useForm<HotelData>({
+const filteredHotels = hotelData.filter(hotel => hotel.area === "Marina" || hotel.area === "Oud Metha" && hotel.board === "Breakfast");
+const HotelSelection: React.FC<HotelSelectionProps> = ({
+  onSubmit,
+  initialData
+}) => {
+  const {
+    control,
+    handleSubmit,
+    formState: {
+      errors
+    }
+  } = useForm<HotelData>({
     defaultValues: {
-      hotelOption: initialData?.hotelOption || "MARINA-1",
-    },
+      hotelOption: initialData?.hotelOption || "MARINA-1"
+    }
   });
-
   const onSubmitForm = (data: HotelData) => {
     const selectedHotel = filteredHotels.find(hotel => hotel.id === data.hotelOption);
     toast({
       title: "Hotel Selected",
-      description: `You've selected ${selectedHotel?.name} for 3 nights`,
+      description: `You've selected ${selectedHotel?.name} for 3 nights`
     });
     onSubmit(data);
   };
-
-  return (
-    <div>
+  return <div>
       <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">
         Select Hotel and Rates
       </h2>
@@ -76,32 +76,15 @@ const HotelSelection: React.FC<HotelSelectionProps> = ({ onSubmit, initialData }
               </div>
             
               <Label>Available Hotel Options (filtered by your criteria)</Label>
-              <Controller
-                control={control}
-                name="hotelOption"
-                rules={{ required: "Please select a hotel option" }}
-                render={({ field }) => (
-                  <RadioGroup
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    className="space-y-4"
-                  >
-                    {filteredHotels.map((hotel) => (
-                      <div
-                        key={hotel.id}
-                        className={cn(
-                          "rounded-lg border p-4",
-                          field.value === hotel.id
-                            ? "border-primary bg-primary/5"
-                            : "border-border"
-                        )}
-                      >
+              <Controller control={control} name="hotelOption" rules={{
+              required: "Please select a hotel option"
+            }} render={({
+              field
+            }) => <RadioGroup value={field.value} onValueChange={field.onChange} className="space-y-4">
+                    {filteredHotels.map(hotel => <div key={hotel.id} className={cn("rounded-lg border p-4", field.value === hotel.id ? "border-primary bg-primary/5" : "border-border")}>
                         <div className="flex items-start">
                           <RadioGroupItem value={hotel.id} id={hotel.id} className="mt-1" />
-                          <Label
-                            htmlFor={hotel.id}
-                            className="flex-1 cursor-pointer ml-2"
-                          >
+                          <Label htmlFor={hotel.id} className="flex-1 cursor-pointer ml-2">
                             <div className="space-y-1">
                               <div className="flex items-center justify-between">
                                 <h3 className="font-semibold text-lg">{hotel.name}</h3>
@@ -113,14 +96,9 @@ const HotelSelection: React.FC<HotelSelectionProps> = ({ onSubmit, initialData }
                               <p className="text-sm text-gray-600">{hotel.area} • {hotel.distance}</p>
                               
                               <div className="flex flex-wrap gap-2 mt-2">
-                                {hotel.amenities.map((amenity, index) => (
-                                  <span 
-                                    key={index} 
-                                    className="bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded-full"
-                                  >
+                                {hotel.amenities.map((amenity, index) => <span key={index} className="bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded-full">
                                     {amenity}
-                                  </span>
-                                ))}
+                                  </span>)}
                               </div>
                               
                               <Separator className="my-3" />
@@ -128,27 +106,21 @@ const HotelSelection: React.FC<HotelSelectionProps> = ({ onSubmit, initialData }
                               <div className="flex justify-between items-center">
                                 <div>
                                   <p className="text-sm text-gray-600">Per night, per room</p>
-                                  <p className="font-semibold text-primary">{hotel.board === "Breakfast" ? 
-                                    hotel.costPerPersonLargeGroup : hotel.costPerPersonLargeGroup}</p>
+                                  <p className="font-semibold text-primary">{hotel.board === "Breakfast" ? hotel.costPerPersonLargeGroup : hotel.costPerPersonLargeGroup}</p>
                                 </div>
                                 <div className="text-right">
-                                  <p className="text-sm text-gray-600">Total for 3 nights (3 rooms)</p>
-                                  <p className="font-bold text-lg text-primary">{hotel.totalFor3Nights}</p>
+                                  
+                                  
                                 </div>
                               </div>
                             </div>
                           </Label>
                         </div>
-                      </div>
-                    ))}
-                  </RadioGroup>
-                )}
-              />
-              {errors.hotelOption && (
-                <p className="text-sm text-red-500">
+                      </div>)}
+                  </RadioGroup>} />
+              {errors.hotelOption && <p className="text-sm text-red-500">
                   {errors.hotelOption.message}
-                </p>
-              )}
+                </p>}
             </div>
 
             <div className="flex justify-center mt-6">
@@ -163,8 +135,6 @@ const HotelSelection: React.FC<HotelSelectionProps> = ({ onSubmit, initialData }
       <div className="text-center text-sm text-gray-500 mt-4">
         Note: Prices shown are for 6 travelers in 3 rooms with {filteredHotels.some(h => h.board === "Breakfast") ? "breakfast included" : "room only"} option.
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default HotelSelection;
