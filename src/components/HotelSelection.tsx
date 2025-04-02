@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
 import { Separator } from "@/components/ui/separator";
+import { hotelData } from "@/data/travelData";
 
 export interface HotelData {
   hotelOption: string;
@@ -18,49 +19,20 @@ interface HotelSelectionProps {
   initialData?: Partial<HotelData>;
 }
 
-// Sample hotel options near Marina (for demo)
-const hotelOptions = [
-  {
-    id: "MARINA-1",
-    name: "Marina Bay Hotel",
-    location: "Dubai Marina",
-    rating: "4.5",
-    price: "AED 850",
-    total: "AED 7,650",
-    amenities: ["Breakfast Included", "Free WiFi", "Pool", "Gym"],
-    distance: "0.2 km from Marina"
-  },
-  {
-    id: "MARINA-2",
-    name: "Dubai Marina Suites",
-    location: "Dubai Marina Walk",
-    rating: "4.8",
-    price: "AED 1,200",
-    total: "AED 10,800",
-    amenities: ["Breakfast Included", "Free WiFi", "Spa", "Beach Access"],
-    distance: "0.5 km from Marina"
-  },
-  {
-    id: "MARINA-3",
-    name: "Marina View Apartments",
-    location: "Marina Promenade",
-    rating: "4.2",
-    price: "AED 720",
-    total: "AED 6,480",
-    amenities: ["Breakfast Included", "Free WiFi", "Kitchen", "Balcony"],
-    distance: "0.8 km from Marina"
-  }
-];
+// Filter hotels that are in Marina and have breakfast option
+const filteredHotels = hotelData.filter(hotel => 
+  hotel.area === "Marina" || (hotel.area === "Oud Metha" && hotel.board === "Breakfast")
+);
 
 const HotelSelection: React.FC<HotelSelectionProps> = ({ onSubmit, initialData }) => {
   const { control, handleSubmit, formState: { errors } } = useForm<HotelData>({
     defaultValues: {
-      hotelOption: initialData?.hotelOption || "MARINA-2",
+      hotelOption: initialData?.hotelOption || "MARINA-1",
     },
   });
 
   const onSubmitForm = (data: HotelData) => {
-    const selectedHotel = hotelOptions.find(hotel => hotel.id === data.hotelOption);
+    const selectedHotel = filteredHotels.find(hotel => hotel.id === data.hotelOption);
     toast({
       title: "Hotel Selected",
       description: `You've selected ${selectedHotel?.name} for 3 nights`,
@@ -103,7 +75,7 @@ const HotelSelection: React.FC<HotelSelectionProps> = ({ onSubmit, initialData }
                 </div>
               </div>
             
-              <Label>Available Hotel Options (with Breakfast Included)</Label>
+              <Label>Available Hotel Options (filtered by your criteria)</Label>
               <Controller
                 control={control}
                 name="hotelOption"
@@ -114,7 +86,7 @@ const HotelSelection: React.FC<HotelSelectionProps> = ({ onSubmit, initialData }
                     onValueChange={field.onChange}
                     className="space-y-4"
                   >
-                    {hotelOptions.map((hotel) => (
+                    {filteredHotels.map((hotel) => (
                       <div
                         key={hotel.id}
                         className={cn(
@@ -138,7 +110,7 @@ const HotelSelection: React.FC<HotelSelectionProps> = ({ onSubmit, initialData }
                                 </div>
                               </div>
                               
-                              <p className="text-sm text-gray-600">{hotel.location} • {hotel.distance}</p>
+                              <p className="text-sm text-gray-600">{hotel.area} • {hotel.distance}</p>
                               
                               <div className="flex flex-wrap gap-2 mt-2">
                                 {hotel.amenities.map((amenity, index) => (
@@ -156,11 +128,12 @@ const HotelSelection: React.FC<HotelSelectionProps> = ({ onSubmit, initialData }
                               <div className="flex justify-between items-center">
                                 <div>
                                   <p className="text-sm text-gray-600">Per night, per room</p>
-                                  <p className="font-semibold text-primary">{hotel.price}</p>
+                                  <p className="font-semibold text-primary">{hotel.board === "Breakfast" ? 
+                                    hotel.costPerPersonLargeGroup : hotel.costPerPersonLargeGroup}</p>
                                 </div>
                                 <div className="text-right">
                                   <p className="text-sm text-gray-600">Total for 3 nights (3 rooms)</p>
-                                  <p className="font-bold text-lg text-primary">{hotel.total}</p>
+                                  <p className="font-bold text-lg text-primary">{hotel.totalFor3Nights}</p>
                                 </div>
                               </div>
                             </div>
@@ -188,7 +161,7 @@ const HotelSelection: React.FC<HotelSelectionProps> = ({ onSubmit, initialData }
       </Card>
       
       <div className="text-center text-sm text-gray-500 mt-4">
-        Note: All hotel options include Bed & Breakfast for all guests as requested.
+        Note: Prices shown are for 6 travelers in 3 rooms with {filteredHotels.some(h => h.board === "Breakfast") ? "breakfast included" : "room only"} option.
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle } from "lucide-react";
 import { format } from "date-fns";
+import { flightOptions, hotelData } from "@/data/travelData";
 
 interface CompletionStepProps {
   onReset: () => void;
@@ -29,26 +30,23 @@ const CompletionStep: React.FC<CompletionStepProps> = ({
   onReset,
   processData
 }) => {
-  // Map flight code to flight details
+  // Get flight details from our dataset
   const getFlightDetails = (flightCode: string) => {
-    const flightMap: Record<string, { airline: string; price: string }> = {
-      "AI-123": { airline: "Air India", price: "₹18,500" },
-      "EK-456": { airline: "Emirates", price: "₹21,700" },
-      "IX-789": { airline: "Air India Express", price: "₹16,300" },
-    };
-    
-    return flightMap[flightCode] || { airline: "Unknown", price: "Unknown" };
+    const flight = flightOptions.find(f => f.id === flightCode);
+    return flight || { airline: "Unknown", price: "Unknown" };
   };
   
-  // Map hotel code to hotel details
+  // Get hotel details from our dataset
   const getHotelDetails = (hotelCode: string) => {
-    const hotelMap: Record<string, { name: string; price: string; total: string }> = {
-      "MARINA-1": { name: "Marina Bay Hotel", price: "AED 850", total: "AED 7,650" },
-      "MARINA-2": { name: "Dubai Marina Suites", price: "AED 1,200", total: "AED 10,800" },
-      "MARINA-3": { name: "Marina View Apartments", price: "AED 720", total: "AED 6,480" },
-    };
+    const hotel = hotelData.find(h => h.id === hotelCode);
     
-    return hotelMap[hotelCode] || { name: "Unknown", price: "Unknown", total: "Unknown" };
+    if (!hotel) return { name: "Unknown", price: "Unknown", total: "Unknown" };
+    
+    return { 
+      name: hotel.name, 
+      price: hotel.board === "Breakfast" ? hotel.costPerPersonLargeGroup : hotel.costPerPersonLargeGroup, 
+      total: hotel.totalFor3Nights 
+    };
   };
   
   const flightDetails = getFlightDetails(processData.flight.flightOption);

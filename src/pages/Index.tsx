@@ -8,17 +8,21 @@ import EmailClient, { EmailClientData } from "@/components/EmailClient";
 import EmailSupplier, { EmailSupplierData } from "@/components/EmailSupplier";
 import CompletionStep from "@/components/CompletionStep";
 import { format } from "date-fns";
+import { hotelData, leadData } from "@/data/travelData";
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [leadData, setLeadData] = useState<LeadFormData | null>(null);
+  const [leadInfo, setLeadInfo] = useState<LeadFormData | null>(null);
   const [flightData, setFlightData] = useState<FlightData | null>(null);
   const [hotelData, setHotelData] = useState<HotelData | null>(null);
   const [clientEmailData, setClientEmailData] = useState<EmailClientData | null>(null);
   const [supplierEmailData, setSupplierEmailData] = useState<EmailSupplierData | null>(null);
 
+  // Use the demo data for Aditya Sharma (our current lead)
+  const currentLead = leadData.find(lead => lead.name === "Aditya Sharma");
+
   const handleLeadSubmit = (data: LeadFormData) => {
-    setLeadData(data);
+    setLeadInfo(data);
     setCurrentStep(2);
   };
 
@@ -43,7 +47,7 @@ const Index = () => {
   };
 
   const resetProcess = () => {
-    setLeadData(null);
+    setLeadInfo(null);
     setFlightData(null);
     setHotelData(null);
     setClientEmailData(null);
@@ -51,21 +55,22 @@ const Index = () => {
     setCurrentStep(1);
   };
 
-  // Map hotel ID to hotel name and price
+  // Get hotel details from our real dataset
   const getHotelDetails = (hotelId: string | undefined) => {
-    const hotels: Record<string, { name: string; price: string }> = {
-      "MARINA-1": { name: "Marina Bay Hotel", price: "AED 7,650" },
-      "MARINA-2": { name: "Dubai Marina Suites", price: "AED 10,800" },
-      "MARINA-3": { name: "Marina View Apartments", price: "AED 6,480" },
-    };
-    
     if (!hotelId) return { name: "", price: "" };
-    return hotels[hotelId] || { name: "", price: "" };
+    
+    const hotel = hotelData.find(h => h.id === hotelId);
+    
+    if (!hotel) return { name: "", price: "" };
+    return { 
+      name: hotel.name, 
+      price: hotel.totalFor3Nights 
+    };
   };
 
   // Generate email data based on selected options
   const emailData = {
-    clientName: leadData?.name || "",
+    clientName: leadInfo?.name || "",
     flightCode: flightData?.flightOption || "",
     flightDate: flightData?.date ? format(flightData.date, 'PP') : "",
     hotelName: getHotelDetails(hotelData?.hotelOption).name,
@@ -74,13 +79,25 @@ const Index = () => {
 
   const supplierData = {
     travelDate: flightData?.date ? format(flightData.date, 'PP') : "",
-    numTravelers: leadData?.travelGroup || 0,
+    numTravelers: leadInfo?.travelGroup || 0,
   };
 
   return (
     <Layout currentStep={currentStep}>
       {currentStep === 1 && (
-        <LeadForm onSubmit={handleLeadSubmit} initialData={leadData || undefined} />
+        <LeadForm 
+          onSubmit={handleLeadSubmit} 
+          initialData={leadInfo || (currentLead ? {
+            name: currentLead.name,
+            email: "aditya.sharma@example.com",
+            phone: "",
+            source: "New Delhi",
+            destination: currentLead.destination,
+            travelGroup: 6,
+            rooms: 3,
+            requirements: currentLead.activity1
+          } : undefined)} 
+        />
       )}
       
       {currentStep === 2 && (
@@ -107,11 +124,11 @@ const Index = () => {
         />
       )}
       
-      {currentStep === 6 && leadData && flightData && hotelData && (
+      {currentStep === 6 && leadInfo && flightData && hotelData && (
         <CompletionStep 
           onReset={resetProcess} 
           processData={{ 
-            lead: leadData, 
+            lead: leadInfo, 
             flight: flightData, 
             hotel: hotelData 
           }} 
