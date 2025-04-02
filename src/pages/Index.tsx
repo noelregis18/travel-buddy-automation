@@ -100,12 +100,20 @@ const Index = () => {
         />
       )}
       
-      {currentStep === 2 && (
-        <FlightSelection onSubmit={handleFlightSubmit} initialData={flightData || undefined} />
+      {currentStep === 2 && leadInfo && (
+        <FlightSelection 
+          onSubmit={handleFlightSubmit} 
+          initialData={flightData || undefined}
+          destination={leadInfo.destination}
+        />
       )}
       
-      {currentStep === 3 && (
-        <HotelSelection onSubmit={handleHotelSubmit} initialData={hotelData || undefined} />
+      {currentStep === 3 && leadInfo && (
+        <HotelSelection 
+          onSubmit={handleHotelSubmit} 
+          initialData={hotelData || undefined}
+          destination={leadInfo.destination}
+        />
       )}
       
       {currentStep === 4 && (
